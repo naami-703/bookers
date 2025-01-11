@@ -5,33 +5,47 @@
 <!--投稿一覧画面-->
 <div class="books_list">
 <h2>Books</h2>
-
   <table>
     <tr>
-      <th>Title</th>
-      <th>Body</th>
-    </tr>
-    <tr>
-      <td>タイトル1</td>
-      <td>本文1</td>
-      <td>Show</td>
-      <td>Edit</td>
-      <td>Dstroy</td>
-      <tr>
-    </table>
+    <th>Title</th>
+    <th>Body</th>
+  </tr>
+</table>
+ <% @books.each do |book| %>
+    <table>
+     <tr>
+      <td><%= book.title %></td>
+      <td><%= book.body %></td>
+      <td><%= link_to "Show", "/books/#{book.id}" %></td>
+      <td><%= link_to "Edit", "/books/#{book.id}/edit" %></td>
+      <td><%= link_to "Destroy", book_path(book), method: :delete, "data-confirm" => "Are you sure?" %></td>
+     </table>
+    <% end %>
   </div>
 
 <!--新規投稿画面-->
 <div class="new_book">
-<h3>New book</h3>
-<%= form_with model: @book do |f| %>
-  <h5>Title</h5>
-  <%= f.text_field :title %>
+  <% if flash[:error].present? %>
+    <div class="alert alert-danger">
+    <%= "#{@error_count} errors prohibited this book from being saved:" %>
+    <ul>
+      <% @book.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+   </div>
+  <% end %>
 
-  <h5>Body</h5>
-  <%= f.text_area :body %><br>
+  <h3>New book</h3>
 
-  <%= f.submit 'Create book' %>
-<% end %>
-</div>
+  <%= form_with model: @book, url: '/books', method: :post do |f| %>
+   <h5>Title</h5>
+    <%= f.text_field :title %>
+
+    <h5>Body</h5>
+    <%= f.text_area :body %><br>
+
+    <%= f.submit 'Create Book' %>
+   <% end %>
+  </div>
 </body>
